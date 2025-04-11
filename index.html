@@ -1,412 +1,778 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AHMED MOBILE</title>
     <!-- Librairies CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.min.css"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .current-date {
-            font-size: 1.1em;
-            color: #666;
-            margin-top: -15px;
-            margin-bottom: 20px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .current-date {
+        font-size: 1.1em;
+        color: #666;
+        margin-top: -15px;
+        margin-bottom: 20px;
+      }
+      .day-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        gap: 10px;
+      }
+      .day-info {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .nav-button {
+        background-color: #2196f3;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+      }
+      .calendar-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+        white-space: nowrap;
+      }
+      .datepicker-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        justify-content: center;
+        min-width: 0;
+      }
+      .datepicker {
+        position: absolute;
+        z-index: 1000;
+        top: 100%;
+        left: 0;
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 0;
+        border-bottom: 1px solid #ddd;
+        background-color: #f1f1f1;
+        border-radius: 8px 8px 0 0;
+        overflow: hidden;
+      }
+      .tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        font-size: 1em;
+        transition: all 0.3s;
+      }
+      .tab.active {
+        background-color: white;
+        font-weight: bold;
+        border-top: 3px solid #2196f3;
+      }
+      .tab-content {
+        display: none;
+        background-color: white;
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .form-container {
+        margin-bottom: 20px;
+      }
+      .form-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+      .form-group {
+        flex: 1;
+        min-width: 200px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input,
+      select,
+      button {
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 5px;
+        transition: opacity 0.3s;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      .btn-danger {
+        background-color: #f44336;
+      }
+      .btn-warning {
+        background-color: #ff9800;
+      }
+      .btn-success {
+        background-color: #4caf50;
+      }
+      .btn-info {
+        background-color: #2196f3;
+      }
+      .btn-pdf {
+        background-color: #e74c3c;
+      }
+      .item-list {
+        margin-top: 20px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        gap: 15px;
+      }
+      .item:last-child {
+        border-bottom: none;
+      }
+      .item-info {
+        flex-grow: 1;
+        min-width: 0;
+      }
+      .item-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .item-details {
+        color: #666;
+        font-size: 0.9em;
+      }
+      .item-actions {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        color: white;
+        display: inline-block;
+        margin-left: 10px;
+      }
+      .badge-paid {
+        background-color: #4caf50;
+      }
+      .badge-pending {
+        background-color: #f44336;
+      }
+      footer {
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: auto;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      .stat-item {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 6px;
+        text-align: center;
+      }
+      .stat-label {
+        font-size: 0.9em;
+        margin-bottom: 5px;
+      }
+      .stat-value {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #4caf50;
+      }
+      .backup-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #555;
+      }
+      #backupStatus {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-left: 4px solid #2196f3;
+      }
+      .today-highlight {
+        color: #2196f3;
+        font-weight: bold;
+      }
+      .pdf-button-container {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 30px;
+        color: #666;
+      }
+      .empty-state i {
+        font-size: 2em;
+        margin-bottom: 10px;
+        color: #ccc;
+      }
+
+      @media (max-width: 768px) {
         .day-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            gap: 10px;
-        }
-        .day-info {
-            font-size: 1.2em;
-            font-weight: bold;
-            text-align: center;
-            flex-grow: 1;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .nav-button {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-        .calendar-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-            white-space: nowrap;
+          flex-direction: column;
+          align-items: stretch;
         }
         .datepicker-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            justify-content: center;
-            min-width: 0;
-        }
-        .datepicker {
-            position: absolute;
-            z-index: 1000;
-            top: 100%;
-            left: 0;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 0;
-            border-bottom: 1px solid #ddd;
-            background-color: #f1f1f1;
-            border-radius: 8px 8px 0 0;
-            overflow: hidden;
-        }
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-            font-size: 1em;
-            transition: all 0.3s;
-        }
-        .tab.active {
-            background-color: white;
-            font-weight: bold;
-            border-top: 3px solid #2196F3;
-        }
-        .tab-content {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .form-container {
-            margin-bottom: 20px;
-        }
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+          margin: 10px 0;
         }
         .form-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, button {
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        button {
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 5px;
-            transition: opacity 0.3s;
-        }
-        button:hover {
-            opacity: 0.9;
-        }
-        .btn-danger {
-            background-color: #f44336;
-        }
-        .btn-warning {
-            background-color: #ff9800;
-        }
-        .btn-success {
-            background-color: #4CAF50;
-        }
-        .btn-info {
-            background-color: #2196F3;
-        }
-        .btn-pdf {
-            background-color: #e74c3c;
-        }
-        .item-list {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
+          min-width: 100%;
         }
         .item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            gap: 15px;
-        }
-        .item:last-child {
-            border-bottom: none;
-        }
-        .item-info {
-            flex-grow: 1;
-            min-width: 0;
-        }
-        .item-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .item-details {
-            color: #666;
-            font-size: 0.9em;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
         }
         .item-actions {
-            display: flex;
-            gap: 10px;
-            flex-shrink: 0;
+          width: 100%;
+          justify-content: flex-end;
         }
-        .badge {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            color: white;
-            display: inline-block;
-            margin-left: 10px;
-        }
-        .badge-paid {
-            background-color: #4CAF50;
-        }
-        .badge-pending {
-            background-color: #f44336;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: auto;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .stat-item {
-            background-color: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-        }
-        .stat-label {
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        .backup-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #555;
-        }
-        #backupStatus {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: rgba(255,255,255,0.1);
-            border-left: 4px solid #2196F3;
-        }
-        .today-highlight {
-            color: #2196F3;
-            font-weight: bold;
-        }
-        .pdf-button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-        }
-        .empty-state i {
-            font-size: 2em;
-            margin-bottom: 10px;
-            color: #ccc;
-        }
+      }
 
-        @media (max-width: 768px) {
-            .day-navigation {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .datepicker-container {
-                margin: 10px 0;
-            }
-            .form-group {
-                min-width: 100%;
-            }
-            .item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .item-actions {
-                width: 100%;
-                justify-content: flex-end;
-            }
-        }
+      /* ----------- */
+      /* Ajoutez ce style dans votre section CSS */
+      .section {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #444;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
+
+      .result {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 20px;
+        border-left: 4px solid #2196f3;
+      }
+
+      .result h3 {
+        margin: 0;
+        color: #333;
+      }
+
+      #marginResult {
+        color: #4caf50;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <h1>Gestion Commerciale<br>Ahmed Mobile</h1>
-        <div class="current-date" id="currentDate"></div>
+      <h1>Gestion Commerciale<br />Ahmed Mobile</h1>
+      <div class="current-date" id="currentDate"></div>
     </div>
 
     <div class="day-navigation">
-        <button class="nav-button" onclick="changeDay(-1)">
-            <i class="fas fa-chevron-left"></i> Jour précédent
+      <button class="nav-button" onclick="changeDay(-1)">
+        <i class="fas fa-chevron-left"></i> Jour précédent
+      </button>
+
+      <div class="datepicker-container">
+        <span class="day-info" id="currentDayDisplay"></span>
+        <button class="calendar-button" id="calendarTrigger">
+          <i class="fas fa-calendar-alt"></i> Choisir une date
         </button>
-        
-        <div class="datepicker-container">
-            <span class="day-info" id="currentDayDisplay"></span>
-            <button class="calendar-button" id="calendarTrigger">
-                <i class="fas fa-calendar-alt"></i> Choisir une date
-            </button>
-            <input type="text" class="datepicker" id="datepicker" style="display: none;">
-        </div>
-        
-        <button class="nav-button" onclick="changeDay(1)">
-            Jour suivant <i class="fas fa-chevron-right"></i>
-        </button>
+        <input
+          type="text"
+          class="datepicker"
+          id="datepicker"
+          style="display: none"
+        />
+      </div>
+
+      <button class="nav-button" onclick="changeDay(1)">
+        Jour suivant <i class="fas fa-chevron-right"></i>
+      </button>
     </div>
 
     <div class="tabs">
-        <div class="tab active" data-tab="sales">Ventes</div>
-        <div class="tab" data-tab="credits">Crédits</div>
+      <div class="tab active" data-tab="sales">Ventes</div>
+      <div class="tab" data-tab="credits">Crédits</div>
     </div>
 
     <!-- Ventes Tab -->
     <div id="sales" class="tab-content active">
-        <div class="form-container">
-            <form id="productForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="productName">Nom du produit</label>
-                        <input type="text" id="productName" placeholder="Entrez le nom du produit" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="productPrice">Prix (DH)</label>
-                        <input type="number" id="productPrice" placeholder="Entrez le prix" min="0" step="0.01" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn-success">Ajouter produit vendu</button>
-            </form>
-        </div>
-
-        <div class="item-list" id="productList">
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <p>Aucun produit enregistré</p>
+      <div class="form-container">
+        <form id="productForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="productName">Nom du produit</label>
+              <input
+                type="text"
+                id="productName"
+                placeholder="Entrez le nom du produit"
+                required
+              />
             </div>
+            <div class="form-group">
+              <label for="productPrice">Prix (DH)</label>
+              <input
+                type="number"
+                id="productPrice"
+                placeholder="Entrez le prix"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn-success">
+            Ajouter produit vendu
+          </button>
+        </form>
+      </div>
+
+      <div class="item-list" id="productList">
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <p>Aucun produit enregistré</p>
         </div>
+      </div>
     </div>
 
     <!-- Crédits Tab -->
     <div id="credits" class="tab-content">
-        <div class="form-container">
-            <form id="creditForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="borrowerName">Nom de l'emprunteur</label>
-                        <input type="text" id="borrowerName" placeholder="Saisir le nom de l'emprunteur" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="creditType">Type de prêt</label>
-                        <input type="text" id="creditType" placeholder="Genre du prêt" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="creditAmount">Montant (DH)</label>
-                        <input type="number" id="creditAmount" placeholder="Prix du prêt" min="0" step="0.01" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn-success">Enregistrer crédit</button>
-            </form>
-        </div>
-
-        <div class="item-list" id="creditList">
-            <div class="empty-state">
-                <i class="fas fa-hand-holding-usd"></i>
-                <p>Aucun crédit enregistré</p>
+      <div class="form-container">
+        <form id="creditForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="borrowerName">Nom de l'emprunteur</label>
+              <input
+                type="text"
+                id="borrowerName"
+                placeholder="Saisir le nom de l'emprunteur"
+                required
+              />
             </div>
+            <div class="form-group">
+              <label for="creditType">Type de prêt</label>
+              <input
+                type="text"
+                id="creditType"
+                placeholder="Genre du prêt"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="creditAmount">Montant (DH)</label>
+              <input
+                type="number"
+                id="creditAmount"
+                placeholder="Prix du prêt"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn-success">Enregistrer crédit</button>
+        </form>
+      </div>
+
+      <div class="item-list" id="creditList">
+        <div class="empty-state">
+          <i class="fas fa-hand-holding-usd"></i>
+          <p>Aucun crédit enregistré</p>
         </div>
+      </div>
     </div>
 
     <footer>
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-label">Ventes totales</div>
-                <div class="stat-value" id="totalSales">0.00 DH</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Crédits totaux</div>
-                <div class="stat-value" id="totalCredits">0.00 DH</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Crédits impayés</div>
-                <div class="stat-value" id="pendingCredits">0.00 DH</div>
-            </div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-label">Ventes totales</div>
+          <div class="stat-value" id="totalSales">0.00 DH</div>
         </div>
+        <div class="stat-item">
+          <div class="stat-label">Crédits totaux</div>
+          <div class="stat-value" id="totalCredits">0.00 DH</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Crédits impayés</div>
+          <div class="stat-value" id="pendingCredits">0.00 DH</div>
+        </div>
+      </div>
 
-        <div class="backup-section">
-            <div class="pdf-button-container">
-                <button onclick="exportToPDF()" class="btn-pdf">
-                    <i class="fas fa-file-pdf"></i> Générer le Rapport PDF
-                </button>
-            </div>
-            <div id="backupStatus">Prêt pour génération de rapport</div>
+      <div class="backup-section">
+        <div class="pdf-button-container">
+          <button onclick="exportToPDF()" class="btn-pdf">
+            <i class="fas fa-file-pdf"></i> Générer le Rapport PDF
+          </button>
         </div>
+        <div id="backupStatus">Prêt pour génération de rapport</div>
+      </div>
     </footer>
+
+    <!-- ----------------- -->
+
+    <div class="section">
+      <h2 class="section-title">Calcul de Marge</h2>
+      <div class="form-container">
+        <form id="marginForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="yesterdayCash">Fond de caisse d'hier (DH)</label>
+              <input
+                type="number"
+                id="yesterdayCash"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="707"
+              />
+            </div>
+            <div class="form-group">
+              <label for="todayCash">Fond de caisse d'aujourd'hui (DH)</label>
+              <input
+                type="number"
+                id="todayCash"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="345"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="yesterdayDeler">Total des 3 Deler d'hier (DH)</label>
+              <input
+                type="number"
+                id="yesterdayDeler"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="293"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inwiRecharge" style="color: #4caf50"
+                >Recharge de Deler Inwi en DH</label
+              >
+              <input
+                type="number"
+                id="inwiRecharge"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="221"
+                class="recharge-input"
+                style="border-color: #4caf50"
+              />
+            </div>
+            <div class="form-group">
+              <label for="orangeRecharge" style="color: #4caf50"
+                >Recharge de Deler Orange en DH</label
+              >
+              <input
+                type="number"
+                id="orangeRecharge"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="23"
+                class="recharge-input"
+                style="border-color: #4caf50"
+              />
+            </div>
+            <div class="form-group">
+              <label for="iamRecharge" style="color: #4caf50"
+                >Recharge de Deler IAM en DH</label
+              >
+              <input
+                type="number"
+                id="iamRecharge"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="3123"
+                class="recharge-input"
+                style="border-color: #4caf50"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="remainingInwi">Reste de Deler Inwi (DH)</label>
+              <input
+                type="number"
+                id="remainingInwi"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="700"
+              />
+            </div>
+            <div class="form-group">
+              <label for="remainingOrange">Reste de Deler Orange (DH)</label>
+              <input
+                type="number"
+                id="remainingOrange"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="1213"
+              />
+            </div>
+            <div class="form-group">
+              <label for="remainingIAM">Reste Deler IAM (DH)</label>
+              <input
+                type="number"
+                id="remainingIAM"
+                placeholder="Montant"
+                min="0"
+                step="0.01"
+                value="411"
+              />
+            </div>
+          </div>
+
+          <button type="button" onclick="calculateMargin()" class="btn-info">
+            Calculer la Marge
+          </button>
+
+          <div
+            class="result"
+            style="
+              margin-top: 20px;
+              padding: 15px;
+              background-color: #f8f9fa;
+              border-radius: 4px;
+            "
+          >
+            <h3>La Marge : <span id="marginResult">0.00 DH</span></h3>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function calculateMargin() {
+        // Récupération des valeurs
+        const yesterdayCash =
+          parseFloat(document.getElementById("yesterdayCash").value) || 0;
+        const todayCash =
+          parseFloat(document.getElementById("todayCash").value) || 0;
+        const yesterdayDeler =
+          parseFloat(document.getElementById("yesterdayDeler").value) || 0;
+
+        // Recharges
+        const inwiRecharge =
+          parseFloat(document.getElementById("inwiRecharge").value) || 0;
+        const orangeRecharge =
+          parseFloat(document.getElementById("orangeRecharge").value) || 0;
+        const iamRecharge =
+          parseFloat(document.getElementById("iamRecharge").value) || 0;
+        const totalRecharges = inwiRecharge + orangeRecharge + iamRecharge;
+
+        // Restes Deler
+        const remainingInwi =
+          parseFloat(document.getElementById("remainingInwi").value) || 0;
+        const remainingOrange =
+          parseFloat(document.getElementById("remainingOrange").value) || 0;
+        const remainingIAM =
+          parseFloat(document.getElementById("remainingIAM").value) || 0;
+        const totalRemaining = remainingInwi + remainingOrange + remainingIAM;
+
+        // Statistiques
+        const totalSales =
+          parseFloat(
+            document.getElementById("totalSales").textContent.replace(" DH", "")
+          ) || 0;
+        const pendingCredits =
+          parseFloat(
+            document
+              .getElementById("pendingCredits")
+              .textContent.replace(" DH", "")
+          ) || 0;
+
+        // Calcul avec inversion du signe
+        const margin =
+          yesterdayDeler +
+          totalRecharges -
+          totalRemaining +
+          totalSales -
+          pendingCredits -
+          todayCash +
+          yesterdayCash;
+
+        // Affichage
+        document.getElementById("marginResult").textContent =
+          margin.toFixed(2) + " DH";
+
+        // Sauvegarde
+        saveMarginData({
+          yesterdayCash,
+          todayCash,
+          yesterdayDeler,
+          recharges: {
+            inwi: inwiRecharge,
+            orange: orangeRecharge,
+            iam: iamRecharge,
+            total: totalRecharges,
+          },
+          remaining: {
+            inwi: remainingInwi,
+            orange: remainingOrange,
+            iam: remainingIAM,
+            total: totalRemaining,
+          },
+          totalSales,
+          pendingCredits,
+          margin,
+        });
+      }
+
+      function saveMarginData(data) {
+        const dateKey = formatDate(currentDate);
+        if (!allData[dateKey]) {
+          allData[dateKey] = {};
+        }
+        allData[dateKey].marginData = data;
+        localStorage.setItem("commercialData", JSON.stringify(allData));
+      }
+
+      function loadMarginData() {
+        const dateKey = formatDate(currentDate);
+        if (allData[dateKey] && allData[dateKey].marginData) {
+          const marginData = allData[dateKey].marginData;
+          document.getElementById("yesterdayCash").value =
+            marginData.yesterdayCash;
+          document.getElementById("todayCash").value = marginData.todayCash;
+          document.getElementById("yesterdayDeler").value =
+            marginData.yesterdayDeler;
+          document.getElementById("inwiRecharge").value =
+            marginData.recharges.inwi;
+          document.getElementById("orangeRecharge").value =
+            marginData.recharges.orange;
+          document.getElementById("iamRecharge").value =
+            marginData.recharges.iam;
+          document.getElementById("remainingInwi").value =
+            marginData.remainingInwi;
+          document.getElementById("remainingOrange").value =
+            marginData.remainingOrange;
+          document.getElementById("remainingIAM").value =
+            marginData.remainingIAM;
+          document.getElementById("marginResult").textContent =
+            marginData.margin.toFixed(2) + " DH";
+        }
+      }
+
+      // Modifiez la fonction loadDayData pour inclure le chargement des données de marge
+      function loadDayData(date) {
+        currentDate = date;
+        updateDateDisplay();
+
+        const dateKey = formatDate(date);
+        if (!allData[dateKey]) {
+          allData[dateKey] = {
+            products: [],
+            credits: [],
+            marginData: null,
+          };
+        }
+
+        products = allData[dateKey].products || [];
+        credits = allData[dateKey].credits || [];
+
+        renderProducts();
+        renderCredits();
+        updateStats();
+        loadMarginData();
+      }
+    </script>
+    <!-- ------- -->
 
     <!-- Librairies JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -416,419 +782,576 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.fr.min.js"></script>
 
     <script>
-        // Initialisation jsPDF
-        const { jsPDF } = window.jspdf;
+      // Initialisation jsPDF
+      const { jsPDF } = window.jspdf;
 
-        // Variables globales
-        let currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        let allData = JSON.parse(localStorage.getItem('commercialData')) || {};
-        let products = [];
-        let credits = [];
+      // Variables globales
+      let currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      let allData = JSON.parse(localStorage.getItem("commercialData")) || {};
+      let products = [];
+      let credits = [];
 
-        // Initialisation du calendrier
-        const datepicker = $('#datepicker').datepicker({
-            language: 'fr',
-            autoClose: true,
-            onSelect: function(formattedDate) {
-                const selectedDate = new Date(formattedDate);
-                selectedDate.setHours(0, 0, 0, 0);
-                loadDayData(selectedDate);
-            }
-        });
+      // Formatage de la date au format JJ-MM-AAAA
+      function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
 
-        $('#calendarTrigger').click(function() {
-            datepicker.data('datepicker').show();
-        });
+      // Formatage complet pour affichage
+      function formatDateForDisplay(date) {
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        return date.toLocaleDateString("fr-FR", options);
+      }
 
-        // Formatage de la date
-        function formatDate(date) {
-            return date.toISOString().split('T')[0];
+      // Initialisation du calendrier
+      const datepicker = $("#datepicker").datepicker({
+        language: "fr",
+        autoClose: true,
+        dateFormat: "dd-mm-yyyy",
+        onSelect: function (formattedDate) {
+          const parts = formattedDate.split("-");
+          const selectedDate = new Date(parts[2], parts[1] - 1, parts[0]);
+          selectedDate.setHours(0, 0, 0, 0);
+          loadDayData(selectedDate);
+        },
+      });
+
+      $("#calendarTrigger").click(function () {
+        datepicker.data("datepicker").show();
+      });
+
+      // Chargement des données du jour
+      function loadDayData(date) {
+        currentDate = date;
+        updateDateDisplay();
+
+        const dateKey = formatDate(date);
+        if (!allData[dateKey]) {
+          allData[dateKey] = {
+            products: [],
+            credits: [],
+          };
         }
 
-        // Chargement des données du jour
-        function loadDayData(date) {
-            currentDate = date;
-            updateDayDisplay();
-            
-            const dateKey = formatDate(date);
-            if (!allData[dateKey]) {
-                allData[dateKey] = {
-                    products: [],
-                    credits: []
-                };
-            }
-            
-            products = allData[dateKey].products || [];
-            credits = allData[dateKey].credits || [];
-            
+        products = allData[dateKey].products || [];
+        credits = allData[dateKey].credits || [];
+
+        renderProducts();
+        renderCredits();
+        updateStats();
+      }
+
+      // Changement de jour
+      function changeDay(days) {
+        const newDate = new Date(currentDate);
+        newDate.setDate(newDate.getDate() + days);
+        loadDayData(newDate);
+      }
+
+      // Mise à jour de l'affichage des dates
+      function updateDateDisplay() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Mise à jour de la date affichée
+        const dayDisplay = document.getElementById("currentDayDisplay");
+        dayDisplay.textContent = formatDateForDisplay(currentDate);
+
+        // Mise à jour de la date système
+        document.getElementById("currentDate").textContent =
+          "Système: " + formatDate(currentDate);
+
+        // Highlight si c'est aujourd'hui
+        if (currentDate.getTime() === today.getTime()) {
+          dayDisplay.classList.add("today-highlight");
+        } else {
+          dayDisplay.classList.remove("today-highlight");
+        }
+      }
+
+      // Sauvegarde des données
+      function saveData() {
+        const dateKey = formatDate(currentDate);
+        allData[dateKey] = {
+          products: products,
+          credits: credits,
+        };
+
+        localStorage.setItem("commercialData", JSON.stringify(allData));
+        document.getElementById("backupStatus").textContent =
+          "Données mises à jour - " + new Date().toLocaleTimeString();
+      }
+
+      // Gestion des onglets
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          document.querySelectorAll(".tab-content").forEach((content) => {
+            content.classList.remove("active");
+          });
+          document.getElementById(tab.dataset.tab).classList.add("active");
+        });
+      });
+
+      // Product Form
+      document
+        .getElementById("productForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const productName = document
+            .getElementById("productName")
+            .value.trim();
+          const productPrice = parseFloat(
+            document.getElementById("productPrice").value
+          );
+
+          if (productName && !isNaN(productPrice)) {
+            products.push({
+              id: Date.now(),
+              name: productName,
+              price: productPrice.toFixed(2),
+              sold: true,
+              date: currentDate.toISOString(),
+            });
+            saveData();
             renderProducts();
+            updateStats();
+            this.reset();
+          }
+        });
+
+      // Credit Form
+      document
+        .getElementById("creditForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const borrowerName = document
+            .getElementById("borrowerName")
+            .value.trim();
+          const creditType = document.getElementById("creditType").value.trim();
+          const creditAmount = parseFloat(
+            document.getElementById("creditAmount").value
+          );
+
+          if (borrowerName && creditType && !isNaN(creditAmount)) {
+            credits.push({
+              id: Date.now(),
+              borrower: borrowerName,
+              type: creditType,
+              amount: creditAmount.toFixed(2),
+              paid: false,
+              date: currentDate.toISOString(),
+            });
+            saveData();
             renderCredits();
             updateStats();
-        }
-
-        // Changement de jour
-        function changeDay(days) {
-            const newDate = new Date(currentDate);
-            newDate.setDate(newDate.getDate() + days);
-            loadDayData(newDate);
-        }
-
-        // Mise à jour de l'affichage du jour
-        function updateDayDisplay() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            const dayDisplay = document.getElementById('currentDayDisplay');
-            dayDisplay.textContent = currentDate.toLocaleDateString('fr-FR', options);
-            
-            // Highlight si c'est aujourd'hui
-            if (currentDate.getTime() === today.getTime()) {
-                dayDisplay.classList.add('today-highlight');
-            } else {
-                dayDisplay.classList.remove('today-highlight');
-            }
-        }
-
-        // Sauvegarde des données
-        function saveData() {
-            const dateKey = formatDate(currentDate);
-            allData[dateKey] = {
-                products: products,
-                credits: credits
-            };
-            
-            localStorage.setItem('commercialData', JSON.stringify(allData));
-            document.getElementById('backupStatus').textContent = 'Données mises à jour - ' + new Date().toLocaleTimeString();
-        }
-
-        // Gestion des onglets
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(tab.dataset.tab).classList.add('active');
-            });
+            this.reset();
+          }
         });
 
-        // Product Form
-        document.getElementById('productForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const productName = document.getElementById('productName').value.trim();
-            const productPrice = parseFloat(document.getElementById('productPrice').value);
-            
-            if (productName && !isNaN(productPrice)) {
-                products.push({
-                    id: Date.now(),
-                    name: productName,
-                    price: productPrice.toFixed(2),
-                    sold: true,
-                    date: currentDate.toISOString()
-                });
-                saveData();
-                renderProducts();
-                updateStats();
-                this.reset();
-            }
-        });
+      // Render Products
+      function renderProducts() {
+        const productList = document.getElementById("productList");
 
-        // Credit Form
-        document.getElementById('creditForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const borrowerName = document.getElementById('borrowerName').value.trim();
-            const creditType = document.getElementById('creditType').value.trim();
-            const creditAmount = parseFloat(document.getElementById('creditAmount').value);
-            
-            if (borrowerName && creditType && !isNaN(creditAmount)) {
-                credits.push({
-                    id: Date.now(),
-                    borrower: borrowerName,
-                    type: creditType,
-                    amount: creditAmount.toFixed(2),
-                    paid: false,
-                    date: currentDate.toISOString()
-                });
-                saveData();
-                renderCredits();
-                updateStats();
-                this.reset();
-            }
-        });
-
-        // Render Products
-        function renderProducts() {
-            const productList = document.getElementById('productList');
-            
-            if (products.length === 0) {
-                productList.innerHTML = `
+        if (products.length === 0) {
+          productList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-box-open"></i>
                         <p>Aucun produit enregistré</p>
                     </div>
                 `;
-                return;
-            }
-            
-            productList.innerHTML = '';
-            
-            products.forEach(product => {
-                const item = document.createElement('div');
-                item.className = 'item';
-                item.innerHTML = `
+          return;
+        }
+
+        productList.innerHTML = "";
+
+        products.forEach((product) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
                     <div class="item-info">
                         <div class="item-name">${product.name}</div>
-                        <div class="item-details">${product.price} DH - ${new Date(product.date).toLocaleDateString('fr-FR')}</div>
+                        <div class="item-details">${
+                          product.price
+                        } DH - ${formatDate(new Date(product.date))}</div>
                     </div>
                     <div class="item-actions">
-                        <button class="btn-danger" data-id="${product.id}" data-type="product">
+                        <button class="btn-danger" data-id="${
+                          product.id
+                        }" data-type="product">
                             <i class="fas fa-trash-alt"></i> Supprimer
                         </button>
                     </div>
                 `;
-                productList.appendChild(item);
-            });
-        }
+          productList.appendChild(item);
+        });
+      }
 
-        // Render Credits
-        function renderCredits() {
-            const creditList = document.getElementById('creditList');
-            
-            if (credits.length === 0) {
-                creditList.innerHTML = `
+      // Render Credits
+      function renderCredits() {
+        const creditList = document.getElementById("creditList");
+
+        if (credits.length === 0) {
+          creditList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-hand-holding-usd"></i>
                         <p>Aucun crédit enregistré</p>
                     </div>
                 `;
-                return;
-            }
-            
-            creditList.innerHTML = '';
-            
-            credits.forEach(credit => {
-                const item = document.createElement('div');
-                item.className = 'item';
-                item.innerHTML = `
+          return;
+        }
+
+        creditList.innerHTML = "";
+
+        credits.forEach((credit) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
                     <div class="item-info">
-                        <div class="item-name">${credit.borrower} - ${credit.type}</div>
-                        <div class="item-details">${credit.amount} DH - ${new Date(credit.date).toLocaleDateString('fr-FR')}</div>
+                        <div class="item-name">${credit.borrower} - ${
+            credit.type
+          }</div>
+                        <div class="item-details">${
+                          credit.amount
+                        } DH - ${formatDate(new Date(credit.date))}</div>
                     </div>
                     <div class="item-actions">
-                        <button class="${credit.paid ? 'btn-warning' : 'btn-success'}" 
-                                data-id="${credit.id}" data-type="credit" data-action="toggle">
-                            <i class="fas fa-${credit.paid ? 'undo' : 'check'}"></i> ${credit.paid ? 'Marquer impayé' : 'Marquer payé'}
+                        <button class="${
+                          credit.paid ? "btn-warning" : "btn-success"
+                        }" 
+                                data-id="${
+                                  credit.id
+                                }" data-type="credit" data-action="toggle">
+                            <i class="fas fa-${
+                              credit.paid ? "undo" : "check"
+                            }"></i> ${
+            credit.paid ? "Marquer impayé" : "Marquer payé"
+          }
                         </button>
-                        <button class="btn-danger" data-id="${credit.id}" data-type="credit" data-action="delete">
+                        <button class="btn-danger" data-id="${
+                          credit.id
+                        }" data-type="credit" data-action="delete">
                             <i class="fas fa-trash-alt"></i> Supprimer
                         </button>
                     </div>
-                    <span class="badge ${credit.paid ? 'badge-paid' : 'badge-pending'}">
-                        <i class="fas fa-${credit.paid ? 'check-circle' : 'exclamation-circle'}"></i> ${credit.paid ? 'Payé' : 'Impayé'}
+                    <span class="badge ${
+                      credit.paid ? "badge-paid" : "badge-pending"
+                    }">
+                        <i class="fas fa-${
+                          credit.paid ? "check-circle" : "exclamation-circle"
+                        }"></i> ${credit.paid ? "Payé" : "Impayé"}
                     </span>
                 `;
-                creditList.appendChild(item);
-            });
-        }
+          creditList.appendChild(item);
+        });
+      }
 
-        // Gestion des actions
-        document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-                const button = e.target.tagName === 'BUTTON' ? e.target : e.target.closest('button');
-                const id = parseInt(button.dataset.id);
-                const type = button.dataset.type;
-                const action = button.dataset.action;
-                
-                if (type === 'product') {
-                    deleteProduct(id);
-                } else if (type === 'credit') {
-                    if (action === 'toggle') {
-                        toggleCreditStatus(id);
-                    } else if (action === 'delete') {
-                        deleteCredit(id);
-                    }
-                }
+      // Gestion des actions
+      document.addEventListener("click", function (e) {
+        if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
+          const button =
+            e.target.tagName === "BUTTON"
+              ? e.target
+              : e.target.closest("button");
+          const id = parseInt(button.dataset.id);
+          const type = button.dataset.type;
+          const action = button.dataset.action;
+
+          if (type === "product") {
+            deleteProduct(id);
+          } else if (type === "credit") {
+            if (action === "toggle") {
+              toggleCreditStatus(id);
+            } else if (action === "delete") {
+              deleteCredit(id);
             }
+          }
+        }
+      });
+
+      function deleteProduct(id) {
+        if (confirm("Supprimer ce produit ?")) {
+          products = products.filter((p) => p.id !== id);
+          saveData();
+          renderProducts();
+          updateStats();
+        }
+      }
+
+      function toggleCreditStatus(id) {
+        credits = credits.map((c) => {
+          if (c.id === id) {
+            return { ...c, paid: !c.paid };
+          }
+          return c;
+        });
+        saveData();
+        renderCredits();
+        updateStats();
+      }
+
+      function deleteCredit(id) {
+        if (confirm("Supprimer ce crédit ?")) {
+          credits = credits.filter((c) => c.id !== id);
+          saveData();
+          renderCredits();
+          updateStats();
+        }
+      }
+
+      function updateStats() {
+        // Sales
+        const totalSales = products.reduce(
+          (sum, p) => sum + parseFloat(p.price),
+          0
+        );
+        document.getElementById("totalSales").textContent =
+          totalSales.toFixed(2) + " DH";
+
+        // Credits
+        const totalCredits = credits.reduce(
+          (sum, c) => sum + parseFloat(c.amount),
+          0
+        );
+        const pendingCredits = credits.reduce(
+          (sum, c) => (!c.paid ? sum + parseFloat(c.amount) : sum),
+          0
+        );
+
+        document.getElementById("totalCredits").textContent =
+          totalCredits.toFixed(2) + " DH";
+        document.getElementById("pendingCredits").textContent =
+          pendingCredits.toFixed(2) + " DH";
+      }
+
+      // Fonction d'export PDF
+      // Modifiez la fonction exportToPDF() pour ajouter la section Marge
+      function exportToPDF() {
+        const doc = new jsPDF();
+
+        // En-tête
+        doc.setFontSize(18);
+        doc.setTextColor(40);
+        doc.text(
+          "Rapport Commercial - " + formatDateForDisplay(currentDate),
+          105,
+          15,
+          { align: "center" }
+        );
+
+        doc.setFontSize(12);
+        doc.setTextColor(100);
+        doc.text(`Généré le: ${formatDate(new Date())}`, 105, 22, {
+          align: "center",
         });
 
-        function deleteProduct(id) {
-            if (confirm('Supprimer ce produit ?')) {
-                products = products.filter(p => p.id !== id);
-                saveData();
-                renderProducts();
-                updateStats();
-            }
-        }
+        // Section Ventes
+        doc.setFontSize(14);
+        doc.setTextColor(40);
+        doc.text("Détail des Ventes", 14, 35);
 
-        function toggleCreditStatus(id) {
-            credits = credits.map(c => {
-                if (c.id === id) {
-                    return {...c, paid: !c.paid};
-                }
-                return c;
-            });
-            saveData();
-            renderCredits();
-            updateStats();
-        }
+        const ventesData = products.map((p) => [
+          p.name,
+          `${p.price} DH`,
+          formatDate(new Date(p.date)),
+        ]);
 
-        function deleteCredit(id) {
-            if (confirm('Supprimer ce crédit ?')) {
-                credits = credits.filter(c => c.id !== id);
-                saveData();
-                renderCredits();
-                updateStats();
-            }
-        }
-
-        function updateStats() {
-            // Sales
-            const totalSales = products.reduce((sum, p) => sum + parseFloat(p.price), 0);
-            document.getElementById('totalSales').textContent = totalSales.toFixed(2) + ' DH';
-            
-            // Credits
-            const totalCredits = credits.reduce((sum, c) => sum + parseFloat(c.amount), 0);
-            const pendingCredits = credits.reduce((sum, c) => !c.paid ? sum + parseFloat(c.amount) : sum, 0);
-            
-            document.getElementById('totalCredits').textContent = totalCredits.toFixed(2) + ' DH';
-            document.getElementById('pendingCredits').textContent = pendingCredits.toFixed(2) + ' DH';
-        }
-
-        // Fonction d'export PDF
-        function exportToPDF() {
-            const doc = new jsPDF();
-            
-            // En-tête
-            doc.setFontSize(18);
-            doc.setTextColor(40);
-            doc.text('Rapport Commercial - ' + currentDate.toLocaleDateString('fr-FR'), 105, 15, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.setTextColor(100);
-            doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 105, 22, { align: 'center' });
-            
-            // Section Ventes
-            doc.setFontSize(14);
-            doc.setTextColor(40);
-            doc.text('Détail des Ventes', 14, 35);
-            
-            const ventesData = products.map(p => [
-                p.name,
-                `${p.price} DH`,
-                new Date(p.date).toLocaleDateString('fr-FR')
-            ]);
-            
-            doc.autoTable({
-                head: [['Produit', 'Prix', 'Date']],
-                body: ventesData,
-                startY: 40,
-                theme: 'grid',
-                headStyles: { 
-                    fillColor: [41, 128, 185],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                alternateRowStyles: {
-                    fillColor: [245, 245, 245]
-                },
-                margin: { top: 40 }
-            });
-            
-            // Section Crédits
-            doc.setFontSize(14);
-            doc.text('Détail des Crédits', 14, doc.autoTable.previous.finalY + 20);
-            
-            const creditsData = credits.map(c => [
-                c.borrower,
-                c.type,
-                `${c.amount} DH`,
-                c.paid ? 'Payé' : 'Impayé',
-                new Date(c.date).toLocaleDateString('fr-FR')
-            ]);
-            
-            doc.autoTable({
-                head: [['Client', 'Type', 'Montant', 'Statut', 'Date']],
-                body: creditsData,
-                startY: doc.autoTable.previous.finalY + 25,
-                theme: 'grid',
-                headStyles: { 
-                    fillColor: [142, 68, 173],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                columnStyles: {
-                    3: { cellWidth: 'auto', halign: 'center' }
-                },
-                didDrawCell: (data) => {
-                    if (data.column.index === 3 && data.cell.raw === 'Impayé') {
-                        doc.setTextColor(231, 76, 60);
-                    } else if (data.column.index === 3 && data.cell.raw === 'Payé') {
-                        doc.setTextColor(39, 174, 96);
-                    }
-                },
-                alternateRowStyles: {
-                    fillColor: [245, 245, 245]
-                }
-            });
-            
-            // Statistiques
-            const totalVentes = products.reduce((sum, p) => sum + parseFloat(p.price), 0);
-            const totalCredits = credits.reduce((sum, c) => sum + parseFloat(c.amount), 0);
-            const creditsImpayes = credits.reduce((sum, c) => !c.paid ? sum + parseFloat(c.amount) : sum, 0);
-            
-            doc.setFontSize(14);
-            doc.text('Statistiques Globales', 14, doc.autoTable.previous.finalY + 20);
-            
-            doc.autoTable({
-                body: [
-                    ['Total Ventes', `${totalVentes.toFixed(2)} DH`],
-                    ['Total Crédits', `${totalCredits.toFixed(2)} DH`],
-                    ['Crédits Impayés', `${creditsImpayes.toFixed(2)} DH`],
-                    ['Solde Net', `${(totalVentes - creditsImpayes).toFixed(2)} DH`]
-                ],
-                startY: doc.autoTable.previous.finalY + 25,
-                theme: 'plain',
-                styles: { 
-                    fontSize: 12,
-                    cellPadding: 6
-                },
-                columnStyles: {
-                    0: { fontStyle: 'bold', cellWidth: 'auto' },
-                    1: { fontStyle: 'bold', halign: 'right' }
-                },
-                headStyles: {
-                    fillColor: [52, 152, 219],
-                    textColor: 255
-                },
-                margin: { top: 20 }
-            });
-            
-            // Pied de page
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text(`© ${new Date().getFullYear()} - Gestion Commerciale - Page ${doc.internal.getNumberOfPages()}`, 105, 285, { align: 'center' });
-            
-            // Sauvegarde du PDF
-            doc.save(`rapport_commercial_${currentDate.toISOString().split('T')[0]}.pdf`);
-            
-            // Mise à jour du statut
-            document.getElementById('backupStatus').textContent = 'PDF généré avec succès - ' + new Date().toLocaleString();
-        }
-
-        // Initialisation au chargement
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDayData(currentDate);
-            updateDayDisplay();
-            
-            // Afficher la date actuelle dans le footer
-            const today = new Date();
-            document.getElementById('currentDate').textContent = 'Système: ' + today.toLocaleDateString('fr-FR');
+        doc.autoTable({
+          head: [["Produit", "Prix", "Date"]],
+          body: ventesData,
+          startY: 40,
+          theme: "grid",
+          headStyles: {
+            fillColor: [41, 128, 185],
+            textColor: 255,
+            fontStyle: "bold",
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245],
+          },
+          margin: { top: 40 },
         });
+
+        // Section Crédits
+        doc.setFontSize(14);
+        doc.text("Détail des Crédits", 14, doc.autoTable.previous.finalY + 20);
+
+        const creditsData = credits.map((c) => [
+          c.borrower,
+          c.type,
+          `${c.amount} DH`,
+          c.paid ? "Payé" : "Impayé",
+          formatDate(new Date(c.date)),
+        ]);
+
+        doc.autoTable({
+          head: [["Client", "Type", "Montant", "Statut", "Date"]],
+          body: creditsData,
+          startY: doc.autoTable.previous.finalY + 25,
+          theme: "grid",
+          headStyles: {
+            fillColor: [142, 68, 173],
+            textColor: 255,
+            fontStyle: "bold",
+          },
+          columnStyles: {
+            3: { cellWidth: "auto", halign: "center" },
+          },
+          didDrawCell: (data) => {
+            if (data.column.index === 3 && data.cell.raw === "Impayé") {
+              doc.setTextColor(231, 76, 60);
+            } else if (data.column.index === 3 && data.cell.raw === "Payé") {
+              doc.setTextColor(39, 174, 96);
+            }
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245],
+          },
+        });
+
+        // Section Statistiques
+        doc.setFontSize(14);
+        doc.text(
+          "Statistiques Globales",
+          14,
+          doc.autoTable.previous.finalY + 20
+        );
+
+        const totalVentes = products.reduce(
+          (sum, p) => sum + parseFloat(p.price),
+          0
+        );
+        const totalCredits = credits.reduce(
+          (sum, c) => sum + parseFloat(c.amount),
+          0
+        );
+        const creditsImpayes = credits.reduce(
+          (sum, c) => (!c.paid ? sum + parseFloat(c.amount) : sum),
+          0
+        );
+
+        doc.autoTable({
+          body: [
+            ["Total Ventes", `${totalVentes.toFixed(2)} DH`],
+            ["Total Crédits", `${totalCredits.toFixed(2)} DH`],
+            ["Crédits Impayés", `${creditsImpayes.toFixed(2)} DH`],
+            ["Solde Net", `${(totalVentes - creditsImpayes).toFixed(2)} DH`],
+          ],
+          startY: doc.autoTable.previous.finalY + 25,
+          theme: "plain",
+          styles: {
+            fontSize: 12,
+            cellPadding: 6,
+          },
+          columnStyles: {
+            0: { fontStyle: "bold", cellWidth: "auto" },
+            1: { fontStyle: "bold", halign: "right" },
+          },
+          headStyles: {
+            fillColor: [52, 152, 219],
+            textColor: 255,
+          },
+          margin: { top: 20 },
+        });
+
+        // Nouvelle Section: Calcul de Marge
+        doc.setFontSize(14);
+        doc.text("Calcul de Marge", 14, doc.autoTable.previous.finalY + 20);
+
+        // Récupérer les données de marge
+        const yesterdayCash =
+          parseFloat(document.getElementById("yesterdayCash").value) || 0;
+        const todayCash =
+          parseFloat(document.getElementById("todayCash").value) || 0;
+        const yesterdayDeler =
+          parseFloat(document.getElementById("yesterdayDeler").value) || 0;
+        const inwiRecharge =
+          parseFloat(document.getElementById("inwiRecharge").value) || 0;
+        const orangeRecharge =
+          parseFloat(document.getElementById("orangeRecharge").value) || 0;
+        const iamRecharge =
+          parseFloat(document.getElementById("iamRecharge").value) || 0;
+        const remainingInwi =
+          parseFloat(document.getElementById("remainingInwi").value) || 0;
+        const remainingOrange =
+          parseFloat(document.getElementById("remainingOrange").value) || 0;
+        const remainingIAM =
+          parseFloat(document.getElementById("remainingIAM").value) || 0;
+        const marginResult =
+          document.getElementById("marginResult").textContent;
+
+        doc.autoTable({
+          body: [
+            ["Fond de caisse d'hier", `${yesterdayCash.toFixed(2)} DH`],
+            ["Fond de caisse d'aujourd'hui", `${todayCash.toFixed(2)} DH`],
+            ["Total des 3 Deler d'hier", `${yesterdayDeler.toFixed(2)} DH`],
+            ["", ""],
+            ["Recharge Inwi", `${inwiRecharge.toFixed(2)} DH`],
+            ["Recharge Orange", `${orangeRecharge.toFixed(2)} DH`],
+            ["Recharge IAM", `${iamRecharge.toFixed(2)} DH`],
+            ["", ""],
+            ["Reste Inwi", `${remainingInwi.toFixed(2)} DH`],
+            ["Reste Orange", `${remainingOrange.toFixed(2)} DH`],
+            ["Reste IAM", `${remainingIAM.toFixed(2)} DH`],
+            ["", ""],
+            ["Marge Calculée", marginResult],
+          ],
+          startY: doc.autoTable.previous.finalY + 25,
+          theme: "plain",
+          styles: {
+            fontSize: 12,
+            cellPadding: 6,
+          },
+          columnStyles: {
+            0: { fontStyle: "bold", cellWidth: "auto" },
+            1: { fontStyle: "bold", halign: "right" },
+          },
+          headStyles: {
+            fillColor: [155, 89, 182],
+            textColor: 255,
+          },
+          didDrawCell: (data) => {
+            if (data.column.index === 1 && data.row.index === 12) {
+              const marginValue = parseFloat(marginResult.replace(" DH", ""));
+              doc.setTextColor(marginValue >= 0 ? "#4CAF50" : "#F44336");
+            }
+          },
+          margin: { top: 20 },
+        });
+
+        // Pied de page
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(
+          `© ${new Date().getFullYear()} - Gestion Commerciale - By CHATT - Page ${doc.internal.getNumberOfPages()}`,
+          105,
+          285,
+          { align: "center" }
+        );
+
+        // Sauvegarde du PDF
+        doc.save(`rapport_commercial_${formatDate(currentDate)}.pdf`);
+
+        // Mise à jour du statut
+        document.getElementById("backupStatus").textContent =
+          "PDF généré avec succès - " + new Date().toLocaleString();
+      }
+      // Initialisation au chargement
+      document.addEventListener("DOMContentLoaded", function () {
+        loadDayData(currentDate);
+      });
+      //   -------------------------------
     </script>
-</body>
+  </body>
 </html>
