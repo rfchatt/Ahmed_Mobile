@@ -679,13 +679,14 @@
 
         // Calcul avec inversion du signe
         const margin =
-          yesterdayDeler +
-          totalRecharges -
-          totalRemaining +
-          totalSales -
-          pendingCredits -
-          todayCash +
-          yesterdayCash;
+          -1 *
+          (yesterdayDeler +
+            totalRecharges -
+            totalRemaining +
+            totalSales -
+            pendingCredits -
+            todayCash +
+            yesterdayCash);
 
         // Affichage
         document.getElementById("marginResult").textContent =
@@ -783,6 +784,7 @@
 
     <script>
       // Initialisation jsPDF
+      // Initialisation jsPDF
       const { jsPDF } = window.jspdf;
 
       // Variables globales
@@ -809,6 +811,20 @@
           day: "numeric",
         };
         return date.toLocaleDateString("fr-FR", options);
+      }
+
+      // Fonction pour réinitialiser les champs de marge
+      function resetMarginInputs() {
+        document.getElementById("yesterdayCash").value = "";
+        document.getElementById("todayCash").value = "";
+        document.getElementById("yesterdayDeler").value = "";
+        document.getElementById("inwiRecharge").value = "";
+        document.getElementById("orangeRecharge").value = "";
+        document.getElementById("iamRecharge").value = "";
+        document.getElementById("remainingInwi").value = "";
+        document.getElementById("remainingOrange").value = "";
+        document.getElementById("remainingIAM").value = "";
+        document.getElementById("marginResult").textContent = "0.00 DH";
       }
 
       // Initialisation du calendrier
@@ -838,8 +854,12 @@
           allData[dateKey] = {
             products: [],
             credits: [],
+            marginData: null,
           };
         }
+
+        // Réinitialiser les champs de marge à chaque changement de jour
+        resetMarginInputs();
 
         products = allData[dateKey].products || [];
         credits = allData[dateKey].credits || [];
@@ -847,6 +867,7 @@
         renderProducts();
         renderCredits();
         updateStats();
+        loadMarginData(); // Charger les données de marge si elles existent
       }
 
       // Changement de jour
